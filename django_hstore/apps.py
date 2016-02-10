@@ -3,6 +3,8 @@ import sys
 import django
 from django.conf import settings
 from django.db.backends.signals import connection_created
+from django.db import connections
+from django.db.utils import DEFAULT_DB_ALIAS, OperationalError
 from django.apps import AppConfig
 
 from psycopg2.extras import register_hstore
@@ -86,6 +88,13 @@ class HStoreConfig(AppConfig):
     verbose = 'Django HStore'
 
     def ready(self):
+        db_conn = connections[DEFAULT_DB_ALIAS]
+        try:
+            c = db_conn.cursor()
+        except OperationalError:
+            pass
+        else:
+            db_conn.close()
         connection_created.connect(connection_handler,
                                    weak=CONNECTION_CREATED_SIGNAL_WEAKREF,
                                    dispatch_uid="_connection_create_handler")
