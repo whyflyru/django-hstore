@@ -4,7 +4,7 @@ import django
 from django.conf import settings
 from django.db.backends.signals import connection_created
 from django.db import connections
-from django.db.utils import DEFAULT_DB_ALIAS
+from django.db.utils import DEFAULT_DB_ALIAS, OperationalError
 from django.apps import AppConfig
 
 from psycopg2.extras import register_hstore
