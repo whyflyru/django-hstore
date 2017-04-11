@@ -1,13 +1,13 @@
-from __future__ import unicode_literals, absolute_import
+from __future__ import absolute_import, unicode_literals
 
+import django
 from django import forms
-from django.contrib.admin.widgets import AdminTextareaWidget
+from django.conf import settings
 from django.contrib.admin.templatetags.admin_static import static
+from django.contrib.admin.widgets import AdminTextareaWidget
 from django.template import Context
 from django.template.loader import get_template
 from django.utils.safestring import mark_safe
-from django.conf import settings
-
 
 __all__ = [
     'AdminHStoreWidget'
@@ -43,7 +43,8 @@ class BaseAdminHStoreWidget(AdminTextareaWidget):
         # prepare template context
         template_context = Context({
             'field_name': name,
-            'STATIC_URL': settings.STATIC_URL
+            'STATIC_URL': settings.STATIC_URL,
+            'use_svg': django.VERSION >= (1, 9),  # use svg icons if django >= 1.9
         })
         # get template object
         template = get_template('hstore_%s_widget.html' % self.admin_style)
